@@ -6,6 +6,7 @@ class Player extends Sprite {
     frameRate,
     frameBuffer,
     scale = 0.5,
+    animations,
   }) {
     super({
       imageSrc,
@@ -19,6 +20,22 @@ class Player extends Sprite {
       y: 1,
     };
     this.collisionBlocks = collisionBlocks;
+    // hitbox ?
+
+    this.animations = animations;
+
+    for (let key in this.animations) {
+      const image = new Image();
+      image.src = this.animations[key].imageSrc;
+      this.animations[key].image = image;
+    }
+  }
+
+  switchSprite(key) {
+    if (this.image === this.animations[key] || !this.loaded) return;
+    this.image = this.animations[key].image;
+    this.frameBuffer = this.animations[key].frameBuffer;
+    this.frameRate = this.animations[key].frameRate;
   }
 
   update() {
@@ -67,15 +84,14 @@ class Player extends Sprite {
       ) {
         if (this.velocity.x > 0) {
           this.velocity.x = 0;
-          
+
           this.position.x = collisionBlock.position.x - offset - 0.01;
           break;
         }
         if (this.velocity.x < 0) {
           this.velocity.x = 0;
 
-          const offset =
-            this.hitbox.position.x - this.position.x ;
+          const offset = this.hitbox.position.x - this.position.x;
 
           this.position.x =
             collisionBlock.position.x + collisionBlock.width - offset + 0.01;
@@ -86,8 +102,8 @@ class Player extends Sprite {
   }
 
   applyGravity() {
-    this.position.y += this.velocity.y;
     this.velocity.y += gravity;
+    this.position.y += this.velocity.y;
   }
 
   checkForVerticalCollisions() {
@@ -112,8 +128,7 @@ class Player extends Sprite {
         if (this.velocity.y < 0) {
           this.velocity.y = 0;
 
-          const offset =
-            this.hitbox.position.y - this.position.y ;
+          const offset = this.hitbox.position.y - this.position.y;
 
           this.position.y =
             collisionBlock.position.y + collisionBlock.height - offset + 0.01;

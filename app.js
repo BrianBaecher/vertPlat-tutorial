@@ -67,6 +67,29 @@ const player = new Player({
   imageSrc: "./assets/warrior/Idle.png",
   frameRate: 8,
   frameBuffer: 12,
+  animations: {
+    Idle: {
+      imageSrc: "./assets/warrior/Idle.png",
+      frameRate: 8,
+      frameBuffer: 8,
+
+    },
+    Run: {
+      imageSrc: "./assets/warrior/Run.png",
+      frameRate: 8,
+      frameBuffer: 7,
+    },
+    Jump: {
+      imageSrc: "./assets/warrior/Jump.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+    Fall: {
+      imageSrc: "./assets/warrior/Fall.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+  },
 });
 
 c.fillStyle = "white";
@@ -108,9 +131,17 @@ function animate() {
 
   player.velocity.x = 0;
   if (keys.d.pressed) {
-    player.velocity.x = 5;
+    player.switchSprite("Run");
+    player.velocity.x = 2;
   } else if (keys.a.pressed) {
-    player.velocity.x = -5;
+    player.velocity.x = -2;
+  } else if (player.velocity.y === 0) {
+    player.switchSprite("Idle");
+  }
+  if (player.velocity.y < 0) {
+    player.switchSprite("Jump");
+  } else if (player.velocity.y > 0) {
+    player.switchSprite("Fall")
   }
   c.restore();
 }
